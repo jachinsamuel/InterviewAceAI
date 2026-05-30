@@ -2,18 +2,15 @@
 
 import { Header } from '@/components/common/Header';
 import { Footer } from '@/components/common/Footer';
-import { HeroSection } from '@/components/landing/HeroSection';
-import { FeaturesSection, HowItWorksSection } from '@/components/landing/FeaturesSection';
 import { PricingSection } from '@/components/landing/PricingSection';
 
-export default function Home() {
+export default function PricingPage() {
   return (
     <main className="min-h-screen bg-dark-bg">
       <Header />
-      <HeroSection />
-      <FeaturesSection />
-      <HowItWorksSection />
-      <PricingSection />
+      <div className="pt-32">
+        <PricingSection />
+      </div>
       <Footer />
     </main>
   );

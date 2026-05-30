@@ -1,0 +1,288 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  avatar            String?
+  password          String?
+  provider          String?
+  providerId        String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  subscription      Subscription?
+  interviews        Interview[]
+  responses         InterviewResponse[]
+  progress          UserProgress?
+  achievements      Achievement[]
+  
+  totalXP           Int       @default(0)
+  streakDays        Int       @default(0)
+  lastInterviewDate DateTime?
+  
+  @@index([email])
+}
+
+model Subscription {
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  tier                  String    @default("free")
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  status                String    @default("active")
+  
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
+  autoRenew             Boolean   @default(true)
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([userId])
+}
+
+model Interview {
+  id                    String    @id @default(cuid())
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type                  String
+  title                 String
+  company               String?
+  role                  String?
+  
+  startedAt             DateTime  @default(now())
+  completedAt           DateTime?
+  duration              Int
+  
+  score                 Float     @default(0)
+  technicalScore        Float?
+  hrScore               Float?
+  communicationScore    Float?
+  
+  questions             InterviewQuestion[]
+  responses             InterviewResponse[]
+  feedback              InterviewFeedback?
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([type])
+}
+
+model InterviewQuestion {
+  id                String    @id @default(cuid())
+  interviewId       String
+  interview         Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  
+  question          String    @db.Text
+  questionType      String
+  difficulty        String
+  tags              String[]  @default([])
+  
+  followUpQuestion  String?   @db.Text
+  
+  askedAt           DateTime  @default(now())
+  answeredAt        DateTime?
+  
+  response          InterviewResponse?
+  
+  @@index([interviewId])
+}
+
+model InterviewResponse {
+  id                    String    @id @default(cuid())
+  questionId            String    @unique
+  question              InterviewQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  interviewId           String
+  interview             Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  responseText          String?   @db.Text
+  responseAudio         String?
+  responseCode          String?   @db.Text
+  
+  duration              Int
+  submittedAt           DateTime  @default(now())
+  
+  feedback              ResponseFeedback?
+  
+  @@index([userId])
+  @@index([interviewId])
+}
+
+model ResponseFeedback {
+  id                      String    @id @default(cuid())
+  responseId              String    @unique
+  response                InterviewResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  
+  accuracy                Float
+  clarity                 Float
+  completeness            Float
+  technicalCorrectness    Float?
+  communicationScore      Float?
+  confidenceScore         Float
+  
+  detailedFeedback        String    @db.Text
+  suggestions             String[]  @default([])
+  incorrectParts          String[]  @default([])
+  improvements            String[]  @default([])
+  
+  grammarScore            Float?
+  vocabularyScore         Float?
+  fillerWordCount         Int?
+  speakingSpeed           String?
+  pauseFrequency          Float?
+  sentimentScore          String?
+  pronunciationScore      Float?
+  
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  
+  @@index([responseId])
+}
+
+model InterviewFeedback {
+  id                        String    @id @default(cuid())
+  interviewId               String    @unique
+  interview                 Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  
+  overallScore              Float
+  summaryFeedback           String    @db.Text
+  strengths                 String[]  @default([])
+  areasOfImprovement        String[]  @default([])
+  nextSteps                 String[]  @default([])
+  
+  timeManagement            Float
+  depthOfAnswers            Float
+  followUpQualityScore      Float
+  
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+  
+  @@index([interviewId])
+}
+
+model UserProgress {
+  id                  String    @id @default(cuid())
+  userId              String    @unique
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  totalInterviews     Int       @default(0)
+  averageScore        Float     @default(0)
+  longestStreak       Int       @default(0)
+  currentStreak       Int       @default(0)
+  totalXP             Int       @default(0)
+  
+  skillProgress       SkillProgress[]
+  completedChallenges Int       @default(0)
+  
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  
+  @@index([userId])
+}
+
+model SkillProgress {
+  id              String    @id @default(cuid())
+  progressId      String
+  progress        UserProgress @relation(fields: [progressId], references: [id], onDelete: Cascade)
+  
+  skill           String
+  level           Int       @default(1)
+  progress        Float     @default(0)
+  interviewCount  Int       @default(0)
+  averageScore    Float     @default(0)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@unique([progressId, skill])
+  @@index([progressId])
+}
+
+model Achievement {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  description String    @db.Text
+  icon        String
+  unlockedAt  DateTime  @default(now())
+  rarity      String
+  
+  createdAt   DateTime  @default(now())
+  
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model CodingProblem {
+  id            String    @id @default(cuid())
+  title         String
+  description   String    @db.Text
+  difficulty    String
+  topic         String
+  
+  testCases     TestCase[]
+  hints         String[]  @default([])
+  optimalSolution String? @db.Text
+  
+  timeComplexity String?
+  spaceComplexity String?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([difficulty])
+  @@index([topic])
+}
+
+model TestCase {
+  id              String    @id @default(cuid())
+  problemId       String
+  problem         CodingProblem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  
+  input           String    @db.Text
+  expectedOutput  String    @db.Text
+  explanation     String?   @db.Text
+  
+  @@index([problemId])
+}
+
+model Session {
+  id            String   @id @default(cuid())
+  sessionToken  String   @unique
+  userId        String
+  expires       DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  
+  @@unique([identifier, token])
+}

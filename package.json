@@ -9,9 +9,27 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "16.2.6",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "@prisma/client": "^7.8.0",
+    "autoprefixer": "^10.5.0",
+    "axios": "^1.16.1",
+    "bcryptjs": "^3.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "dotenv-cli": "^11.0.0",
+    "express-cors": "^0.0.3",
+    "framer-motion": "^12.40.0",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.17.0",
+    "next": "^16.2.6",
+    "next-auth": "^4.24.14",
+    "openai": "^6.39.1",
+    "postcss": "^8.5.15",
+    "prisma": "^7.8.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,7 +38,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.9.3"
   }
 }
