@@ -2,27 +2,13 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   darkMode: 'class',
   theme: {
     extend: {
-      colors: {
-        primary: '#D94F00',
-        secondary: '#FFFFFF',
-        accent: '#F5F5F5',
-        'dark-bg': '#0F0F0F',
-        'dark-bg-2': '#1A1A1A',
-        'light-bg': '#FFFFFF',
-        'light-text': '#FFFFFF',
-        'dark-text': '#1A1A1A',
-      },
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['SF Mono', 'Monaco', 'monospace'],
-      },
       fontSize: {
         xs: ['12px', '16px'],
         sm: ['14px', '20px'],

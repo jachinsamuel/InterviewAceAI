@@ -1,0 +1,46 @@
+/* ================================================================
+   Motion tokens & utilities
+   ================================================================ */
+
+:root {
+  --motion-duration-fast: 150ms;
+  --motion-duration-base: 250ms;
+  --motion-duration-slow: 400ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* ── Transition utilities ── */
+
+.motion-fade {
+  transition:
+    opacity var(--motion-duration-base) var(--motion-ease),
+    transform var(--motion-duration-base) var(--motion-ease);
+}
+
+.motion-slide-up {
+  transition:
+    opacity var(--motion-duration-base) var(--motion-ease),
+    transform var(--motion-duration-base) var(--motion-ease);
+}
+
+.motion-scale {
+  transition: transform var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.motion-scale:active {
+  transform: scale(0.97);
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

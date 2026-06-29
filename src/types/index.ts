@@ -5,7 +5,6 @@ export interface User {
   avatar?: string;
   createdAt: Date;
   updatedAt: Date;
-  subscriptionTier: 'free' | 'starter' | 'professional' | 'enterprise';
   interviewCount: number;
   totalXP: number;
   streakDays: number;
@@ -144,17 +143,6 @@ export interface Achievement {
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
 
-export interface Subscription {
-  id: string;
-  userId: string;
-  tier: 'free' | 'starter' | 'professional' | 'enterprise';
-  stripeCustomerId?: string;
-  stripeSubscriptionId?: string;
-  status: 'active' | 'canceled' | 'past_due' | 'incomplete';
-  currentPeriodStart: Date;
-  currentPeriodEnd: Date;
-  autoRenew: boolean;
-}
 
 export interface DashboardStats {
   totalInterviews: number;
@@ -180,9 +168,10 @@ export interface DailyProgress {
 export interface APIResponse<T> {
   success: boolean;
   data?: T;
+  message?: string;
   error?: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
   };
 }

@@ -1,19 +1,12 @@
 import { create } from 'zustand';
-import { User, Interview, DashboardStats } from '@/types';
+import { Interview, DashboardStats } from '@/types';
 
-interface AuthStore {
-  user: User | null;
-  isLoggedIn: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  setUser: (user: User | null) => void;
-}
+// Auth is now managed by NextAuth
 
 interface InterviewStore {
   currentInterview: Interview | null;
   isRecording: boolean;
-  startInterview: (type: string) => void;
+  startInterview: (type: 'technical' | 'hr' | 'coding' | 'behavioral', title: string) => Promise<void>;
   endInterview: () => void;
   setRecording: (recording: boolean) => void;
 }
@@ -25,64 +18,23 @@ interface DashboardStore {
   setStats: (stats: DashboardStats) => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
-  isLoggedIn: false,
-  isLoading: false,
-  login: async (email, password) => {
-    set({ isLoading: true });
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (data.user) {
-        set({ user: data.user, isLoggedIn: true });
-        localStorage.setItem('token', data.token);
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  logout: () => {
-    set({ user: null, isLoggedIn: false });
-    localStorage.removeItem('token');
-  },
-  setUser: (user) => set({ user, isLoggedIn: !!user }),
-}));
-
 export const useInterviewStore = create<InterviewStore>((set) => ({
   currentInterview: null,
   isRecording: false,
-  startInterview: (type) => {
-    set({
-      currentInterview: {
-        id: `interview-${Date.now()}`,
-        userId: '',
-        type: type as any,
-        title: `${type.charAt(0).toUpperCase() + type.slice(1)} Interview`,
-        duration: 0,
-        score: 0,
-        startedAt: new Date(),
-        questions: [],
-        feedback: {
-          id: '',
-          interviewId: '',
-          overallScore: 0,
-          summaryFeedback: '',
-          strengths: [],
-          areasOfImprovement: [],
-          nextSteps: [],
-          timeManagement: 0,
-          depthOfAnswers: 0,
-          followUpQualityScore: 0,
-        },
-      } as Interview,
-    });
+  startInterview: async (type, title) => {
+    try {
+      const res = await fetch('/api/interviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, title, company: 'General', role: 'Software Engineer' }),
+      });
+      const data = await res.json();
+      if (data.success && data.data.interview) {
+        set({ currentInterview: data.data.interview as Interview });
+      }
+    } catch (error) {
+      console.error('Failed to start interview', error);
+    }
   },
   endInterview: () => set({ currentInterview: null, isRecording: false }),
   setRecording: (recording) => set({ isRecording: recording }),
@@ -96,8 +48,8 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
     try {
       const res = await fetch(`/api/dashboard/stats/${userId}`);
       const data = await res.json();
-      if (data.stats) {
-        set({ stats: data.stats });
+      if (data.success && data.data?.stats) {
+        set({ stats: data.data.stats });
       }
     } catch (error) {
       console.error('Failed to load stats:', error);

@@ -6,12 +6,13 @@ export function successResponse<T>(data: T, message = 'Success', status = 200) {
     {
       success: true,
       data,
+      message,
     },
     { status }
   );
 }
 
-export function errorResponse(code: string, message: string, status = 400, details?: any) {
+export function errorResponse(code: string, message: string, status = 400, details?: unknown) {
   return NextResponse.json<APIResponse<null>>(
     {
       success: false,
@@ -25,7 +26,7 @@ export function errorResponse(code: string, message: string, status = 400, detai
   );
 }
 
-export function validateRequired(data: Record<string, any>, fields: string[]) {
+export function validateRequired(data: Record<string, unknown>, fields: string[]) {
   const missing = fields.filter((field) => !data[field]);
   if (missing.length > 0) {
     return {

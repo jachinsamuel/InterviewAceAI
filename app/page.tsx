@@ -4,7 +4,8 @@ import { Header } from '@/components/common/Header';
 import { Footer } from '@/components/common/Footer';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { FeaturesSection, HowItWorksSection } from '@/components/landing/FeaturesSection';
-import { PricingSection } from '@/components/landing/PricingSection';
+import { CapabilitiesSection } from '@/components/landing/TestimonialsSection';
+import { FreeCTASection } from '@/components/landing/FreeCTASection';
 
 export default function Home() {
   return (
@@ -13,8 +14,10 @@ export default function Home() {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
-      <PricingSection />
+      <CapabilitiesSection />
+      <FreeCTASection />
       <Footer />
     </main>
   );
 }
+

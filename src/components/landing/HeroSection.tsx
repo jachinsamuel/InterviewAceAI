@@ -3,126 +3,154 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { PlayCircle, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '../common/Button';
+
+const container = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.4, 0.25, 1] as const } },
+};
+
+const CONVERSATION = [
+  { role: 'interviewer', text: "Let's start with system design. How would you design a URL shortener that handles 100M daily requests?" },
+  { role: 'candidate', text: "I'd begin by clarifying requirements — read-heavy workload, so I'd optimize for fast lookups. I'd use a hash-based approach with Base62 encoding…" },
+  { role: 'interviewer', text: "Good start. How would you handle collisions in your hashing strategy?" },
+  { role: 'candidate', text: "I'd use a combination of a counter-based approach with MD5 hashing, then check for collisions in the database before confirming…" },
+  { role: 'feedback', text: "Clarity: Excellent · Structure: Strong · Depth: 8/10 — consider discussing cache invalidation strategy" },
+];
 
 export const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-12">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-50" />
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl opacity-20 animate-pulse-soft" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl opacity-20 animate-pulse-soft" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-20 bg-dark-bg">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] via-transparent to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/[0.04] rounded-full blur-[120px]" />
+      </div>
+
 
       <div className="container-max relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="visible"
+          className="max-w-5xl mx-auto"
+        >
+
+          {/* Headline */}
+          <motion.h1
+            variants={fadeUp}
+            className="text-5xl sm:text-6xl lg:text-[4.5rem] font-bold leading-[1.08] tracking-tight text-center mb-6"
           >
-            <div className="mb-6">
-              <span className="badge">🚀 AI-Powered Interview Prep</span>
-            </div>
+            <span className="text-light-text">Stop practicing alone.</span>
+            <br />
+            <span className="gradient-text">Start practicing right.</span>
+          </motion.h1>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
-              Master Every
-              <br />
-              <span className="gradient-text">Interview with AI</span>
-            </h1>
+          {/* Subheadline */}
+          <motion.p
+            variants={fadeUp}
+            className="text-lg text-zinc-400 text-center max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
+            Interview prep that actually works. Our AI conducts realistic mock interviews, 
+            analyzes your responses in real-time, and gives you the feedback that gets you hired.
+          </motion.p>
 
-            <p className="text-xl text-light-text/80 mb-8 leading-relaxed max-w-lg">
-              Practice real interviews, receive instant AI-powered feedback, and land your dream job. 
-              Built with cutting-edge NLP and generative AI.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button size="lg" variant="primary" className="w-full sm:w-auto">
+          {/* CTAs */}
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col sm:flex-row gap-3 justify-center mb-20"
+          >
+            <Link href="/interview">
+              <Button size="lg" variant="primary" className="group">
                 Start Free Interview
-                <ArrowRight size={20} />
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
               </Button>
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                <PlayCircle size={20} />
-                Watch Demo
+            </Link>
+            <Link href="#how-it-works">
+              <Button size="lg" variant="secondary">
+                See how it works
               </Button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-8">
-              <div>
-                <div className="text-3xl font-bold text-primary">50K+</div>
-                <p className="text-sm text-light-text/60">Users Practicing</p>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary">100M+</div>
-                <p className="text-sm text-light-text/60">Interviews Completed</p>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary">95%</div>
-                <p className="text-sm text-light-text/60">Job Success Rate</p>
-              </div>
-            </div>
+            </Link>
           </motion.div>
 
-          {/* Right Visual */}
+          {/* Interview mockup — terminal style */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
+            variants={fadeUp}
+            className="relative max-w-3xl mx-auto"
           >
-            <div className="relative w-full h-96 sm:h-[500px] rounded-2xl overflow-hidden glass-effect-dark">
-              {/* Animated Interview Mockup */}
-              <div className="w-full h-full bg-gradient-to-br from-dark-bg to-dark-bg-2 flex flex-col items-center justify-center p-8">
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-orange-600 flex items-center justify-center mb-6"
-                >
-                  <span className="text-3xl">🤖</span>
-                </motion.div>
-                <p className="text-center text-light-text/80 mb-4">AI Interviewer is ready...</p>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="flex gap-2"
-                >
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                </motion.div>
-
-                {/* Floating Cards */}
-                <motion.div
-                  animate={{ y: [-20, 20, -20] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                  className="absolute top-8 right-8 bg-dark-bg-2 border border-gray-700 rounded-xl p-4 max-w-xs"
-                >
-                  <p className="text-sm text-light-text/80">
-                    "Tell me about a recent project where you optimized performance"
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  animate={{ y: [20, -20, 20] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: 0.2 }}
-                  className="absolute bottom-8 left-8 bg-primary/20 border border-primary/40 rounded-xl p-4 max-w-xs"
-                >
-                  <p className="text-sm text-primary">✓ Confidence: 92%</p>
-                </motion.div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-2xl shadow-black/40">
+              {/* Terminal header */}
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-800/80 bg-zinc-900/50">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-zinc-700" />
+                  <div className="w-3 h-3 rounded-full bg-zinc-700" />
+                  <div className="w-3 h-3 rounded-full bg-zinc-700" />
+                </div>
+                <span className="text-xs text-zinc-500 ml-2 font-mono">interview-session — system-design</span>
               </div>
+
+              {/* Conversation */}
+              <div className="p-5 space-y-4 font-mono text-sm max-h-[340px] overflow-hidden">
+                {CONVERSATION.map((msg, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 + i * 0.3, duration: 0.5 }}
+                  >
+                    {msg.role === 'interviewer' && (
+                      <div className="flex gap-3">
+                        <span className="text-primary shrink-0 select-none">AI ›</span>
+                        <span className="text-zinc-300">{msg.text}</span>
+                      </div>
+                    )}
+                    {msg.role === 'candidate' && (
+                      <div className="flex gap-3 pl-2">
+                        <span className="text-zinc-500 shrink-0 select-none">You ›</span>
+                        <span className="text-zinc-400">{msg.text}</span>
+                      </div>
+                    )}
+                    {msg.role === 'feedback' && (
+                      <div className="mt-2 px-3 py-2 rounded-md bg-primary/[0.08] border border-primary/20">
+                        <span className="text-primary/80 text-xs">{msg.text}</span>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Bottom fade */}
+              <div className="h-8 bg-gradient-to-t from-zinc-950 to-transparent -mt-8 relative z-10" />
             </div>
 
-            {/* Floating Element */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="absolute -top-8 -right-8 w-32 h-32 border border-primary/20 rounded-full"
-            />
+            {/* Glow behind mockup */}
+            <div className="absolute -inset-4 bg-primary/[0.03] rounded-2xl blur-2xl -z-10" />
           </motion.div>
-        </div>
+
+          {/* Honest feature badges */}
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-wrap items-center justify-center gap-3 mt-16 pt-12 border-t border-zinc-800/50"
+          >
+            {['100% Free', 'No Credit Card Required', 'Unlimited Practice'].map((badge, i) => (
+              <div
+                key={i}
+                className="px-4 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/50 text-xs text-zinc-400 font-medium"
+              >
+                {badge}
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

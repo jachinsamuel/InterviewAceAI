@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -9,6 +9,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   isLoading?: boolean;
   children: React.ReactNode;
+  'aria-label'?: string;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -26,19 +27,23 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed';
+      'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 
     const variants = {
-      primary: 'bg-primary text-white hover:opacity-90',
-      secondary: 'bg-dark-bg-2 text-light-text border border-gray-700 hover:border-primary',
-      outline: 'bg-transparent text-primary border border-primary hover:bg-primary/10',
-      ghost: 'bg-transparent text-light-text hover:bg-white/10',
+      primary:
+        'bg-primary text-dark-bg hover:brightness-110 shadow-sm hover:shadow-md hover:shadow-primary/20',
+      secondary:
+        'bg-dark-bg-2 text-light-text border border-zinc-700 hover:border-zinc-500 hover:bg-dark-bg-3',
+      outline:
+        'bg-transparent text-light-text border border-zinc-600 hover:border-primary hover:text-primary',
+      ghost:
+        'bg-transparent text-light-text/70 hover:text-light-text hover:bg-white/5',
     };
 
     const sizes = {
       sm: 'px-4 py-2 text-sm',
-      md: 'px-6 py-3 text-base',
-      lg: 'px-8 py-4 text-lg',
+      md: 'px-6 py-2.5 text-sm',
+      lg: 'px-8 py-3.5 text-base',
     };
 
     return (
@@ -48,7 +53,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}
       >
-        {isLoading ? <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full" /> : icon}
+        {isLoading ? <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" /> : icon}
         {children}
       </button>
     );
@@ -120,13 +125,13 @@ export const Dropdown = ({ label, value, options, onChange, error }: DropdownPro
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="input-field flex items-center justify-between bg-dark-bg-2 border border-gray-700 text-light-text"
+        className="input-field flex items-center justify-between bg-dark-bg-2 border border-zinc-700 text-light-text"
       >
         <span>{options.find((opt) => opt.value === value)?.label || label}</span>
         <ChevronDown size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-dark-bg-2 border border-gray-700 rounded-lg overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-dark-bg-2 border border-zinc-700 rounded-lg overflow-hidden z-50">
           {options.map((opt) => (
             <button
               key={opt.value}
@@ -187,15 +192,15 @@ export const Modal = ({ isOpen, onClose, title, children, footer }: ModalProps) 
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-dark-bg-2 rounded-xl max-w-md w-full border border-gray-700 animate-fade-in">
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+      <div className="bg-dark-bg-2 rounded-xl max-w-md w-full border border-zinc-700 animate-fade-in">
+        <div className="flex items-center justify-between p-6 border-b border-zinc-700">
           <h2 className="text-xl font-bold">{title}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
-            ✕
+          <button onClick={onClose} className="text-zinc-400 hover:text-white" aria-label="Close modal">
+            <X size={20} />
           </button>
         </div>
         <div className="p-6">{children}</div>
-        {footer && <div className="p-6 border-t border-gray-700 flex gap-3">{footer}</div>}
+        {footer && <div className="p-6 border-t border-zinc-700 flex gap-3">{footer}</div>}
       </div>
     </div>
   );
